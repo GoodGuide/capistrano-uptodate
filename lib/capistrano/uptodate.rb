@@ -1,12 +1,4 @@
 Capistrano::Configuration.instance(true).load do
-
-  scm               = fetch(:uptodate_scm, :git)
-  scm_binary        = fetch(:uptodate_scm_bynary, 'git')
-  remote_repository = fetch(:uptodate_remote_repository, 'origin')
-  branch            = fetch(:uptodate_branch, 'master')
-  time              = fetch(:uptodate_time, 300)
-  behavior          = fetch(:uptodate_behaviour, :confirm)
-
   namespace :uptodate do
     desc "Automatically synchronize current repository"
     task :default do
@@ -19,8 +11,15 @@ Capistrano::Configuration.instance(true).load do
     end
 
     task :git do
+      scm = fetch(:uptodate_scm, :git)
+      scm_binary = fetch(:uptodate_scm_binary, 'git')
+      remote_repository = fetch(:uptodate_remote_repository, 'origin')
+      branch = fetch(:uptodate_branch, 'master')
+      time = fetch(:uptodate_time, 300)
+      behavior = fetch(:uptodate_behaviour, :confirm)
+      git_dir = fetch(:uptodate_local_repository, `#{scm_binary} rev-parse --git-dir`.strip)
+
       # skip if no git dir detected
-      git_dir = fetch(:uptodate_local_reposytory, `#{scm_binary} rev-parse --git-dir`.strip)
       next if git_dir.empty?
 
       # skip if remote is not yet configured
