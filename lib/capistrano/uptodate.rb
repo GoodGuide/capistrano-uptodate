@@ -29,7 +29,9 @@ Capistrano::Configuration.instance(true).load do
       end
 
       # compare local tree and remote ref
-      next if system("#{scm_binary} diff --quiet #{remote_ref}")
+      # NB: (git `diff --quiet` has a bug where it show 0-exit the first time
+      # used in clean environments like a Docker container)
+      next if system("#{scm_binary} diff --exit-code #{remote_ref} > /dev/null")
 
       # otherwise, they're different
       remote_ref_parsed = `#{scm_binary} rev-parse --symbolic-full-name #{remote_ref}`.chomp
