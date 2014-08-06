@@ -21,11 +21,11 @@ Capistrano::Configuration.instance(true).load do
       # skip if no git dir detected
       next if git_dir.empty?
 
-      # fetch remote references and skip on error
+      # fetch remote references
       fetch_file = File.join(git_dir, "FETCH_HEAD")
       unless File.exist?(fetch_file) && Time.now - File.mtime(fetch_file) < time
         Capistrano::CLI.ui.say "Fetching remote git repo..."
-        next unless system("#{scm_binary} fetch")
+        system("#{scm_binary} fetch")
       end
 
       # compare local tree and remote ref
