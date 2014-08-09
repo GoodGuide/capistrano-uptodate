@@ -2,6 +2,7 @@ Capistrano::Configuration.instance(true).load do
   namespace :uptodate do
     desc "Automatically synchronize current repository"
     task :default do
+      next if fetch(:uptodate_skip, false)
       case scm
       when :git
         top.uptodate.git
